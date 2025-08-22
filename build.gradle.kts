@@ -1,10 +1,10 @@
 plugins {
     id("java")
-    id("org.springframework.boot") version "3.4.3" // Указываем версию Spring Boot
+    id("org.springframework.boot") version "3.5.4" // Указываем версию Spring Boot
     id("io.spring.dependency-management") version "1.1.0"
 }
 
-group = "org.example"
+group = "ru.hogwarts"
 version = "1.0-SNAPSHOT"
 
 
