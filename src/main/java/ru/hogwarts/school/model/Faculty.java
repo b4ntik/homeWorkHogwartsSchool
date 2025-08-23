@@ -10,7 +10,7 @@ public class Faculty {
     }
 
     public void setId() {
-       id++;
+        id++;
     }
 
     public String getName() {
