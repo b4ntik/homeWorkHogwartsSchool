@@ -8,7 +8,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
-import java.util.Collections;
+
 
 @RestController
 public class StudentController {
@@ -26,40 +26,40 @@ public class StudentController {
 
     ;
 
-    @GetMapping("{id}")
-    public Student getStudent(@PathVariable long id) {
+    @GetMapping("/students")
+    public Student getStudent(@RequestParam long id) {
         return studentService.findStudent(id);
     }
 
-    @GetMapping("/student/all")
+    @GetMapping("/students/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
-    @GetMapping("/age/{age}")
-    public ResponseEntity<Collection<Student>> findStudentsByAge(@PathVariable int age){
-        if (age>0){
-            return ResponseEntity.ok(studentService.findStudentsByAge(age));
+    @GetMapping("/students/find")
+    public ResponseEntity<Collection<Student>> findStudentsByAge(@RequestParam(required = false) int age){
+        if (age<=0){
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Collections.emptyList());
+        return ResponseEntity.ok(studentService.findStudentsByAge(age));
     }
 
-    @PostMapping
+    @PostMapping("/students")
     public Student createStudent(@RequestBody Student student) {
         return studentService.createStudent(student);
     }
 
-    @PutMapping
+    @PutMapping("/students")
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
         Student changedStudent = studentService.editStudent(student);
         if (changedStudent == null) {
-            ResponseEntity.notFound().build();
+           return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(changedStudent);
     }
 
-    @DeleteMapping("/id")
-    public Student deleteStudent(@PathVariable long id) {
+    @DeleteMapping("/students")
+    public Student deleteStudent(@RequestParam long id) {
         return studentService.deleteStudent(id);
     }
 }

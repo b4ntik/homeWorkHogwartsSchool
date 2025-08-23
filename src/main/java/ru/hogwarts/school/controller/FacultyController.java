@@ -5,9 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
-import ru.hogwarts.school.service.StudentService;
+
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,8 +21,8 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("{id}")
-    public Faculty getFaculty(@PathVariable long id) {
+    @GetMapping("/faculty")
+    public Faculty getFaculty(@RequestParam long id) {
         return facultyService.findFaculty(id);
     }
 
@@ -32,20 +31,20 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
-    @GetMapping("/color/{color}")
-    public ResponseEntity<Collection<Faculty>> findFacultiesByAge(@RequestParam(required = false) String color) {
+    @GetMapping("/faculty/find")
+    public ResponseEntity<Collection<Faculty>> findFacultiesByColor(@RequestParam(required = false) String color) {
         if (color != null && !color.isBlank()) {
             return ResponseEntity.ok(facultyService.findFacultiesByColor(color));
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
 
-    @PostMapping
+    @PostMapping("/faculty")
     public Faculty createFaculty(@RequestBody Faculty faculty) {
         return facultyService.createFaculty(faculty);
     }
 
-    @PutMapping
+    @PutMapping("/faculty")
     public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
         Faculty changedFaculty = facultyService.editFaculty(faculty);
         if (changedFaculty == null) {
@@ -54,8 +53,8 @@ public class FacultyController {
         return ResponseEntity.ok(changedFaculty);
     }
 
-    @DeleteMapping("/id")
-    public Faculty deleteFaculty(@PathVariable long id) {
+    @DeleteMapping("/faculty")
+    public Faculty deleteFaculty(@RequestParam long id) {
         return facultyService.deleteFaculty(id);
     }
 }

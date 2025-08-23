@@ -11,12 +11,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
-    private HashMap<Long, Faculty> faculties;
+    private HashMap<Long, Faculty> faculties = new HashMap<>();
+    private long id = 0;
 
     //создание факультета
     public Faculty createFaculty(Faculty faculty) {
-        faculty.setId();
-        faculties.put(faculty.getId(), faculty);
+        faculty.setId(++id);
+        faculties.put(id, faculty);
         return faculty;
     }
 

@@ -9,8 +9,8 @@ public class Student {
         return id;
     }
 
-    public void setId() {
-        id++;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

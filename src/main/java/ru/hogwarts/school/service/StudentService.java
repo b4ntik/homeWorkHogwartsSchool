@@ -10,11 +10,11 @@ import java.util.stream.Stream;
 @Service
 public class StudentService {
     private HashMap<Long, Student> students = new HashMap<>();
-    private long id;
+    private long id = 0;
 
     //создание студента
     public Student createStudent(Student student) {
-        student.setId();
+        student.setId(++id);
         students.put(id, student);
         return student;
     }
