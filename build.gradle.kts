@@ -20,9 +20,9 @@ dependencies {
     implementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation ("org.springframework.boot:spring-boot-starter-data-jpa")
-
-    //implementation ("org.springdoc:springdoc-openapi-ui:1.8.0")
+    implementation ("org.springframework.boot:spring-boot-starter-jdbc")
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 
     runtimeOnly("org.postgresql:postgresql")
 
