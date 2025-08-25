@@ -54,7 +54,7 @@ public class FacultyController {
     }
 
     @DeleteMapping("/faculty")
-    public Faculty deleteFaculty(@RequestParam long id) {
-        return facultyService.deleteFaculty(id);
+    public void deleteFaculty(@RequestParam Long id) {
+        facultyService.deleteFaculty(id);
     }
 }

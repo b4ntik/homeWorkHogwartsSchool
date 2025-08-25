@@ -1,11 +1,9 @@
 package ru.hogwarts.school.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "faculty")
 public class Faculty {
 
     @Id
@@ -14,7 +12,7 @@ public class Faculty {
     private String name;
     private String color;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -26,17 +26,19 @@ public class StudentController {
 
     ;
 
-    @GetMapping("/students")
+    @GetMapping("/student")
     public Student getStudent(@RequestParam long id) {
         return studentService.findStudent(id);
     }
 
-    @GetMapping("/students/all")
+    @GetMapping ("/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+        Collection<Student> students = studentService.getAllStudents();
+
+        return ResponseEntity.ok(students);
     }
 
-    @GetMapping("/students/find")
+    @GetMapping("/student/find")
     public ResponseEntity<Collection<Student>> findStudentsByAge(@RequestParam(required = false) int age){
         if (age<=0){
             return ResponseEntity.badRequest().build();
@@ -44,12 +46,12 @@ public class StudentController {
         return ResponseEntity.ok(studentService.findStudentsByAge(age));
     }
 
-    @PostMapping("/students")
+    @PostMapping("/student")
     public Student createStudent(@RequestBody Student student) {
         return studentService.createStudent(student);
     }
 
-    @PutMapping("/students")
+    @PutMapping("/student")
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
         Student changedStudent = studentService.editStudent(student);
         if (changedStudent == null) {
@@ -58,8 +60,8 @@ public class StudentController {
         return ResponseEntity.ok(changedStudent);
     }
 
-    @DeleteMapping("/students")
-    public Student deleteStudent(@RequestParam long id) {
-        return studentService.deleteStudent(id);
+    @DeleteMapping("/student")
+    public void deleteStudent(@RequestParam Long id) {
+        studentService.deleteStudent(id);
     }
 }

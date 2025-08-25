@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +11,13 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 @Service
 public class StudentService {
 
     @Autowired
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     public StudentService(StudentRepository studentRepository){ this.studentRepository = studentRepository;}
 
@@ -33,8 +33,7 @@ public class StudentService {
         return newStudent;
     }
 
-    //изменить студента. в данной ситуации replace выглядит логичнее put, иначе будет дублирование create
-    //и replace сам вернет null, если совпадений не найдено
+    //изменить студента
     @Transactional
     public Student editStudent(Student student) {
         if(student.getId() == null){
@@ -46,8 +45,18 @@ public class StudentService {
     }
 
     //найти студента по айди
-    public Student findStudent(Long id) {
-        return studentRepository.findById(id).get();
+    @Transactional
+    public Student findStudent(long id) {
+        String sql = "SELECT * FROM student WHERE id = :id";
+
+        try {
+            return (Student) entityManager.createNativeQuery(sql, Student.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new RuntimeException("Студента с таким ID " + id + " не существует", e);
+        }
+
     }
 
     //удалить студента по айди
@@ -56,20 +65,15 @@ public class StudentService {
     }
 
     // выдать список всех студентов
+    @Transactional
     public Collection<Student> getAllStudents() {
-        studentRepository.findAll();
+        String sql = "SELECT * FROM student";
+          return  entityManager.createNativeQuery(sql, Student.class).getResultList();
     }
 
     //фильтр студентов по возрасту
     public Collection<Student> findStudentsByAge(int age) {
-        Collection<Student> studentsForFilter = getAllStudents();
-        if (studentsForFilter.isEmpty()) {
-            return Collections.emptyList();
-        }
-        Collection<Student> result = studentsForFilter.stream()
-                .filter(s -> s.getAge() == age)
-                .collect(Collectors.toList());
-        return result;
-
+        return studentRepository.findByAge(age);
+        
     }
 }
