@@ -10,6 +10,7 @@ import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 public class FacultyController {
@@ -22,7 +23,7 @@ public class FacultyController {
     }
 
     @GetMapping("/faculty")
-    public Faculty getFaculty(@RequestParam long id) {
+    public Optional<Faculty> getFaculty(@RequestParam long id) {
         return facultyService.findFaculty(id);
     }
 
@@ -45,12 +46,9 @@ public class FacultyController {
     }
 
     @PutMapping("/faculty")
-    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        Faculty changedFaculty = facultyService.editFaculty(faculty);
-        if (changedFaculty == null) {
-            ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(changedFaculty);
+    public ResponseEntity<Optional<Faculty>> editFaculty(@RequestBody Faculty faculty) {
+
+        return ResponseEntity.ok(facultyService.editFaculty(faculty));
     }
 
     @DeleteMapping("/faculty")

@@ -2,7 +2,6 @@ package ru.hogwarts.school.service;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,52 +27,47 @@ public class StudentService {
     @Transactional
     public Student createStudent(@Nullable Student student) {
         student.setId(null);
-        Student newStudent = entityManager.merge(student);
-        entityManager.flush();
-        return newStudent;
+
+        return studentRepository.save(student);
     }
 
     //изменить студента
-    @Transactional
-    public Student editStudent(Student student) {
-        if(student.getId() == null){
-            throw new IllegalArgumentException("ID не может быть нулевым");
+
+    public Optional<Student> editStudent(Student student) {
+        if (student.getId() != null) {
+            Optional<Student> editedStudent = studentRepository.findById(student.getId());
+            if(editedStudent.isPresent()){
+                Student newStudent = editedStudent.get();
+                newStudent.setName(student.getName());
+                newStudent.setAge(student.getAge());
+                studentRepository.save(newStudent);
+                return Optional.of(newStudent);
+            }
         }
-        Student editedStudent = entityManager.merge(student);
-        entityManager.flush();
-        return editedStudent;
+        return Optional.empty();
     }
-
-    //найти студента по айди
-    @Transactional
-    public Student findStudent(long id) {
-        String sql = "SELECT * FROM student WHERE id = :id";
-
-        try {
-            return (Student) entityManager.createNativeQuery(sql, Student.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw new RuntimeException("Студента с таким ID " + id + " не существует", e);
+        //найти студента по айди
+        public Optional<Student> findStudent (Long id){
+            return studentRepository.findById(id);
         }
 
-    }
+        //удалить студента по айди
+        public void deleteStudent (Long id){
+            studentRepository.deleteById(id);
+        }
 
-    //удалить студента по айди
-    public void deleteStudent(Long id) {
-        studentRepository.deleteById(id);
-    }
+        // выдать список всех студентов
 
-    // выдать список всех студентов
-    @Transactional
-    public Collection<Student> getAllStudents() {
-        String sql = "SELECT * FROM student";
-          return  entityManager.createNativeQuery(sql, Student.class).getResultList();
-    }
+        public List<Student> getAllStudents () {
 
-    //фильтр студентов по возрасту
-    public Collection<Student> findStudentsByAge(int age) {
-        return studentRepository.findByAge(age);
-        
+            return studentRepository.findAll();
+
+        }
+
+        //фильтр студентов по возрасту
+        public Collection<Student> findStudentsByAge ( int age){
+            return studentRepository.findByAge(age);
+
+        }
+
     }
-}
