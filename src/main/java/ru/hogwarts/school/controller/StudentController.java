@@ -8,6 +8,8 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -27,13 +29,13 @@ public class StudentController {
     ;
 
     @GetMapping("/student")
-    public Student getStudent(@RequestParam long id) {
+    public Optional<Student> getStudent(@RequestParam Long id) {
         return studentService.findStudent(id);
     }
 
     @GetMapping ("/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
-        Collection<Student> students = studentService.getAllStudents();
+        List<Student> students = studentService.getAllStudents();
 
         return ResponseEntity.ok(students);
     }
@@ -52,12 +54,10 @@ public class StudentController {
     }
 
     @PutMapping("/student")
-    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        Student changedStudent = studentService.editStudent(student);
-        if (changedStudent == null) {
-           return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(changedStudent);
+    public ResponseEntity<Optional<Student>> editStudent(@RequestBody Student student) {
+
+
+        return ResponseEntity.ok( studentService.editStudent(student));
     }
 
     @DeleteMapping("/student")
