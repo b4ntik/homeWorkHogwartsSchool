@@ -33,6 +33,12 @@ public class StudentController {
         return studentService.findStudent(id);
     }
 
+    @GetMapping("/student/findByAge")
+    public Collection<Student> getStudentBYAge(@RequestParam(required = false) int min, @RequestParam(required = false) int max) {
+        return studentService.findStudentsByAgeBetween(min, max);
+    }
+
+
     @GetMapping ("/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
