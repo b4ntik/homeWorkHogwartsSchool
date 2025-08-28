@@ -1,45 +1,48 @@
 package ru.hogwarts.school.service;
 
 import jakarta.annotation.Nullable;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class FacultyService {
     @Autowired
     private final FacultyRepository facultyRepository;
-
-    public FacultyService(FacultyRepository facultyRepository){ this.facultyRepository = facultyRepository;}
-
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final StudentRepository studentRepository;
+    public FacultyService(FacultyRepository facultyRepository, StudentRepository studentRepository){ this.facultyRepository = facultyRepository;
+        this.studentRepository = studentRepository;
+    }
 
     //создание факультета
     @Transactional
     public Faculty createFaculty(@Nullable Faculty faculty) {
         faculty.setId(null);
-        Faculty newFaculty = entityManager.merge(faculty);
-        entityManager.flush();
-        return newFaculty;
+        return facultyRepository.save(faculty);
+
     }
 
     //изменение факультета
     @Transactional
-    public Faculty editFaculty(Faculty faculty) {
-        if(faculty.getId() == null){
-            throw new IllegalArgumentException("ID не может быть нулевым");
+    public Optional<Faculty> editFaculty(Faculty faculty) {
+        if (faculty.getId() != null) {
+        Optional<Faculty> editedFaculty = facultyRepository.findById(faculty.getId());
+            if(editedFaculty.isPresent()){
+                Faculty newFaculty = editedFaculty.get();
+                newFaculty.setName(faculty.getName());
+                newFaculty.setColor(faculty.getColor());
+                facultyRepository.save(newFaculty);
+                return Optional.of(newFaculty);
+            }
         }
-        Faculty editedFaculty = entityManager.merge(faculty);
-        entityManager.flush();
-        return editedFaculty;
+        return Optional.empty();
     }
 
     //удаление факультета
@@ -48,29 +51,29 @@ public class FacultyService {
     }
 
     //найти факультет по айди
-    public Faculty findFaculty(long id) {
-        String sql = "SELECT * FROM faculty WHERE id = :id";
+    public Optional<Faculty> findFaculty(long id) {
 
-        try {
-            return (Faculty) entityManager.createNativeQuery(sql, Faculty.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw new RuntimeException("Факультета с таким ID " + id + " не существует", e);
-        }
-
+            return facultyRepository.findById(id);
     }
 
     //выдать все факультеты
-    @Transactional
+
     public Collection<Faculty> getAllFaculties() {
-        String sql = "SELECT * FROM faculty";
-        return  entityManager.createNativeQuery(sql, Faculty.class).getResultList();
+
+        return  facultyRepository.findAll();
+
     }
     //фильтр факультетов по цвету
     public Collection<Faculty> findFacultiesByColor(String color) {
 
         return facultyRepository.findByColor(color);
 
+    }
+    public Collection<Faculty> findFacultyByColorOrNameIgnoreCase(String color, String name){
+
+        return facultyRepository.findByColorOrNameIgnoreCase(color, name);
+    }
+    public Collection<Student> findStudentByFacultyId(Long id){
+        return studentRepository.findStudentsByFacultyId(id);
     }
 }
