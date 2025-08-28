@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 
@@ -46,6 +47,15 @@ public class FacultyController {
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
+
+    @GetMapping("/faculty/findStudentsInFaculty")
+    public ResponseEntity<Collection<Student>> findStudentsByFacultyId(@RequestParam(required = false) Long id) {
+        if (id != null) {
+            return ResponseEntity.ok(facultyService.findStudentByFacultyId(id));
+        }
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PostMapping("/faculty")
     public Faculty createFaculty(@RequestBody Faculty faculty) {

@@ -6,7 +6,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
@@ -17,8 +19,11 @@ public class StudentService {
 
     @Autowired
     private final StudentRepository studentRepository;
+    private final FacultyRepository facultyRepository;
 
-    public StudentService(StudentRepository studentRepository){ this.studentRepository = studentRepository;}
+    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository){ this.studentRepository = studentRepository;
+        this.facultyRepository = facultyRepository;
+    }
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -74,4 +79,8 @@ public class StudentService {
         return studentRepository.findStudentsByAgeBetween(min, max);
         }
 
+         public Faculty findFacultyByStudentId(Long studentId) {
+
+        return facultyRepository.findFacultyByStudentId(studentId);
     }
+}

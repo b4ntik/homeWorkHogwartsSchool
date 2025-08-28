@@ -5,7 +5,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -14,8 +16,10 @@ import java.util.Optional;
 public class FacultyService {
     @Autowired
     private final FacultyRepository facultyRepository;
-
-    public FacultyService(FacultyRepository facultyRepository){ this.facultyRepository = facultyRepository;}
+    private final StudentRepository studentRepository;
+    public FacultyService(FacultyRepository facultyRepository, StudentRepository studentRepository){ this.facultyRepository = facultyRepository;
+        this.studentRepository = studentRepository;
+    }
 
     //создание факультета
     @Transactional
@@ -68,5 +72,8 @@ public class FacultyService {
     public Collection<Faculty> findFacultyByColorOrNameIgnoreCase(String color, String name){
 
         return facultyRepository.findByColorOrNameIgnoreCase(color, name);
+    }
+    public Collection<Student> findStudentByFacultyId(Long id){
+        return studentRepository.findStudentsByFacultyId(id);
     }
 }
