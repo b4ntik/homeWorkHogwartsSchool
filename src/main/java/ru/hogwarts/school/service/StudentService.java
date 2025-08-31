@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -20,9 +21,11 @@ public class StudentService {
     @Autowired
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
+    private final AvatarRepository avatarRepository;
 
-    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository){ this.studentRepository = studentRepository;
+    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository, AvatarRepository avatarRepository){ this.studentRepository = studentRepository;
         this.facultyRepository = facultyRepository;
+        this.avatarRepository = avatarRepository;
     }
 
     @PersistenceContext
@@ -57,8 +60,11 @@ public class StudentService {
         }
 
         //удалить студента по айди
+        @Transactional
         public void deleteStudent (Long id){
-            studentRepository.deleteById(id);
+        avatarRepository.deleteAvatarByStudentId(id);
+        studentRepository.deleteById(id);
+
         }
 
         // выдать список всех студентов
