@@ -81,6 +81,7 @@ public class MainTests {
         Assertions.assertEquals("newTestStudent", editedStudent.get().getName());
         Assertions.assertEquals(45, editedStudent.get().getAge());
     }
+
     //поиск студентов
     @Test
     void findStudent() throws Exception {
