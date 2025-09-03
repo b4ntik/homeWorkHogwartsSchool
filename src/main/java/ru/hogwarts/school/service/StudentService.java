@@ -68,11 +68,14 @@ public class StudentService {
         }
 
         // выдать список всех студентов
-
         public List<Student> getAllStudents () {
 
             return studentRepository.findAll();
 
+        }
+        @Transactional
+        public void deleteStudentsByName(String nameStudent){
+        studentRepository.deleteStudentsByName(nameStudent);
         }
 
         //фильтр студентов по возрасту
@@ -80,6 +83,11 @@ public class StudentService {
             return studentRepository.findByAge(age);
 
         }
+    //фильтр студентов по возрасту
+    public Collection<Student> findStudentsByName (String nameStudent){
+        return studentRepository.findStudentsByName(nameStudent);
+
+    }
         public Collection<Student> findStudentsByAgeBetween(int min, int max){
 
         return studentRepository.findStudentsByAgeBetween(min, max);
