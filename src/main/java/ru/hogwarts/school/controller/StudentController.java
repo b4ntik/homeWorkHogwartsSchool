@@ -30,8 +30,8 @@ public class StudentController {
     ;
 
     @GetMapping("/student")
-    public Optional<Student> getStudent(@RequestParam Long id) {
-        return studentService.findStudent(id);
+    public ResponseEntity<Optional<Student>> getStudent(@RequestParam Long id) {
+        return ResponseEntity.ok(studentService.findStudent(id));
     }
 
     @GetMapping("/student/findByAge")
@@ -45,7 +45,7 @@ public class StudentController {
     }
 
 
-    @GetMapping ("/all")
+    @GetMapping ("/student/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
 
@@ -67,9 +67,7 @@ public class StudentController {
 
     @PutMapping("/student")
     public ResponseEntity<Optional<Student>> editStudent(@RequestBody Student student) {
-
-
-        return ResponseEntity.ok( studentService.editStudent(student));
+        return ResponseEntity.ok(studentService.editStudent(student));
     }
 
     @DeleteMapping("/student")

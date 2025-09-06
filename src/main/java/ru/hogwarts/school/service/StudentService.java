@@ -35,8 +35,8 @@ public class StudentService {
     @Transactional
     public Student createStudent(@Nullable Student student) {
         student.setId(null);
-
         return studentRepository.save(student);
+
     }
 
     //изменить студента
@@ -48,8 +48,8 @@ public class StudentService {
                 Student newStudent = editedStudent.get();
                 newStudent.setName(student.getName());
                 newStudent.setAge(student.getAge());
-                studentRepository.save(newStudent);
-                return Optional.of(newStudent);
+                //studentRepository.save(newStudent);
+                return Optional.of(studentRepository.save(newStudent));
             }
         }
         return Optional.empty();
@@ -79,7 +79,7 @@ public class StudentService {
         }
 
         //фильтр студентов по возрасту
-        public Collection<Student> findStudentsByAge ( int age){
+        public Collection<Student> findStudentsByAge (int age){
             return studentRepository.findByAge(age);
 
         }
