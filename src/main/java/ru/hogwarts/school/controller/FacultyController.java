@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 public class FacultyController {
@@ -22,7 +24,7 @@ public class FacultyController {
     }
 
     @GetMapping("/faculty")
-    public Faculty getFaculty(@RequestParam long id) {
+    public Optional<Faculty> getFaculty(@RequestParam long id) {
         return facultyService.findFaculty(id);
     }
 
@@ -38,19 +40,33 @@ public class FacultyController {
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
-
-    @PostMapping("/faculty")
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
+    @GetMapping("/faculty/findByColor")
+    public ResponseEntity<Collection<Faculty>> findFacultyByColor(@RequestParam(required = false) String color, @RequestParam(required = false) String name) {
+        if (color != null || name != null) {
+            return ResponseEntity.ok(facultyService.findFacultyByColorOrNameIgnoreCase(color, name));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
     }
 
-    @PutMapping("/faculty")
-    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        Faculty changedFaculty = facultyService.editFaculty(faculty);
-        if (changedFaculty == null) {
-            ResponseEntity.notFound().build();
+    @GetMapping("/faculty/findStudentsInFaculty")
+    public ResponseEntity<Collection<Student>> findStudentsByFacultyId(@RequestParam(required = false) Long id) {
+        if (id != null) {
+            return ResponseEntity.ok(facultyService.findStudentByFacultyId(id));
         }
-        return ResponseEntity.ok(changedFaculty);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PostMapping("/faculty")
+    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
+        Faculty savedFaculty = facultyService.createFaculty(faculty);
+        return ResponseEntity.ok(savedFaculty);
+    }
+
+        @PutMapping("/faculty")
+    public ResponseEntity<Optional<Faculty>> editFaculty(@RequestBody Faculty faculty) {
+
+        return ResponseEntity.ok(facultyService.editFaculty(faculty));
     }
 
     @DeleteMapping("/faculty")

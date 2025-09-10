@@ -4,10 +4,13 @@ package ru.hogwarts.school.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -27,20 +30,31 @@ public class StudentController {
     ;
 
     @GetMapping("/student")
-    public Student getStudent(@RequestParam long id) {
+    public Optional<Student> getStudent(@RequestParam Long id) {
         return studentService.findStudent(id);
     }
 
-    @GetMapping ("/all")
+    @GetMapping("/student/findByAge")
+    public Collection<Student> getStudentByAge(@RequestParam(required = false) int min, @RequestParam(required = false) int max) {
+        return studentService.findStudentsByAgeBetween(min, max);
+    }
+
+    @GetMapping("/student/findFacultyByIdStudent")
+    public Faculty getFacultyByStudentId(@RequestParam(required = false) Long studentId) {
+        return studentService.findFacultyByStudentId(studentId);
+    }
+
+
+    @GetMapping("/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
-        Collection<Student> students = studentService.getAllStudents();
+        List<Student> students = studentService.getAllStudents();
 
         return ResponseEntity.ok(students);
     }
 
     @GetMapping("/student/find")
-    public ResponseEntity<Collection<Student>> findStudentsByAge(@RequestParam(required = false) int age){
-        if (age<=0){
+    public ResponseEntity<Collection<Student>> findStudentsByAge(@RequestParam(required = false) int age) {
+        if (age <= 0) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(studentService.findStudentsByAge(age));
@@ -52,12 +66,9 @@ public class StudentController {
     }
 
     @PutMapping("/student")
-    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        Student changedStudent = studentService.editStudent(student);
-        if (changedStudent == null) {
-           return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(changedStudent);
+    public ResponseEntity<Optional<Student>> editStudent(@RequestBody Student student) {
+
+        return ResponseEntity.ok(studentService.editStudent(student));
     }
 
     @DeleteMapping("/student")
