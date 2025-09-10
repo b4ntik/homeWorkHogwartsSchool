@@ -31,7 +31,7 @@ public class FacultyService {
 
     //изменение факультета
     @Transactional
-    public Optional<Faculty> editFaculty(Faculty faculty) {
+    public Faculty editFaculty(Faculty faculty) {
         if (faculty.getId() != null) {
         Optional<Faculty> editedFaculty = facultyRepository.findById(faculty.getId());
             if(editedFaculty.isPresent()){
@@ -39,10 +39,10 @@ public class FacultyService {
                 newFaculty.setName(faculty.getName());
                 newFaculty.setColor(faculty.getColor());
                 facultyRepository.save(newFaculty);
-                return Optional.of(newFaculty);
+                return newFaculty;
             }
         }
-        return Optional.empty();
+        return null;
     }
 
     //удаление факультета

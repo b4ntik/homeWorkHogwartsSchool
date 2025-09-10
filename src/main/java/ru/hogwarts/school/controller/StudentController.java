@@ -62,14 +62,17 @@ public class StudentController {
 
     @PostMapping("/student")
     public Student createStudent(@RequestBody Student student) {
+
         return studentService.createStudent(student);
     }
 
     @PutMapping("/student")
-    public ResponseEntity<Optional<Student>> editStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
+//        updated = studentService.editStudent(student);
+//        return updated.map(ResponseEntity::ok)
+//                .orElseGet(() -> ResponseEntity.notFound().build());
 
-
-        return ResponseEntity.ok( studentService.editStudent(student));
+        return ResponseEntity.ok(studentService.editStudent(student));
     }
 
     @DeleteMapping("/student")

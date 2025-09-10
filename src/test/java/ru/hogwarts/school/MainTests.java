@@ -75,11 +75,11 @@ public class MainTests {
         createdStudent.setName("newTestStudent");
         createdStudent.setAge(45);
 
-        Optional<Student> editedStudent = studentService.editStudent(createdStudent);
+        Student editedStudent = studentService.editStudent(createdStudent);
 
-        Assertions.assertNotNull(editedStudent.isPresent());
-        Assertions.assertEquals("newTestStudent", editedStudent.get().getName());
-        Assertions.assertEquals(45, editedStudent.get().getAge());
+        Assertions.assertNotNull(editedStudent);
+        Assertions.assertEquals("newTestStudent", editedStudent.getName());
+        Assertions.assertEquals(45, editedStudent.getAge());
     }
     //поиск студентов
     @Test

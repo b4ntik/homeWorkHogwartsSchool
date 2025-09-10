@@ -63,7 +63,7 @@ public class FacultyController {
     }
 
     @PutMapping("/faculty")
-    public ResponseEntity<Optional<Faculty>> editFaculty(@RequestBody Faculty faculty) {
+    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
 
         return ResponseEntity.ok(facultyService.editFaculty(faculty));
     }

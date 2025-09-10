@@ -68,4 +68,7 @@ public class Avatar {
     public Student getStudent() {
         return student;
     }
+
+    public void setId(Long id) { this.id = id;
+    }
 }

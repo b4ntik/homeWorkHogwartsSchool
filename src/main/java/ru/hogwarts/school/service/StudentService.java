@@ -41,7 +41,7 @@ public class StudentService {
 
     //изменить студента
 
-    public Optional<Student> editStudent(Student student) {
+    public Student editStudent(Student student) {
         if (student.getId() != null) {
             Optional<Student> editedStudent = studentRepository.findById(student.getId());
             if(editedStudent.isPresent()){
@@ -49,10 +49,10 @@ public class StudentService {
                 newStudent.setName(student.getName());
                 newStudent.setAge(student.getAge());
                 studentRepository.save(newStudent);
-                return Optional.of(newStudent);
+                return newStudent;
             }
         }
-        return Optional.empty();
+        return null;
     }
         //найти студента по айди
         public Optional<Student> findStudent (Long id){
