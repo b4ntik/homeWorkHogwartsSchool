@@ -29,7 +29,7 @@ public class StudentControllerTests {
     @LocalServerPort
     private int port;
 
-    @MockitoBean
+   @Autowired
     private StudentService studentService;
 
     @Autowired
@@ -45,15 +45,15 @@ public class StudentControllerTests {
     void setUp() {
 
         testStudent = new Student();
-        testStudent.setId(1L);
+        //testStudent.setId(1L);
         testStudent.setName("TestStudent");
         testStudent.setAge(66);
         testStudent2 = new Student();
-        testStudent2.setId(2L);
+       // testStudent2.setId(2L);
         testStudent2.setName("TestStudent2");
         testStudent2.setAge(99);
         testFaculty = new Faculty();
-        testFaculty.setId(1L);
+       //testFaculty.setId(1L);
         testFaculty.setName("Slizereen");
         testFaculty.setColor("green");
         createdStudent = testStudent;
@@ -62,7 +62,7 @@ public class StudentControllerTests {
     void testGetStudent(){
         Long studentId = 1L;
 
-        when(studentService.findStudent(studentId)).thenReturn(Optional.of(testStudent));
+        //when(studentService.findStudent(studentId)).thenReturn(Optional.of(testStudent));
 
     ResponseEntity<Student> response = restTemplate.getForEntity("/student?id={id}",Student.class, studentId);
 

@@ -32,7 +32,7 @@ public class MainTests {
     private StudentRepository studentRepository;
     @Autowired
     private TestRestTemplate restTemplate;
-   private Student testStudent;
+    private Student testStudent;
     private Student createdStudent;
 
     @BeforeEach

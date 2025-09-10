@@ -23,8 +23,8 @@ public class Avatar {
 
 
     @OneToOne
-    //@MapsId
-    //@JoinColumn(name = "student_id")
+    @MapsId
+    @JoinColumn(name = "student_id")
     private Student student;
 
 

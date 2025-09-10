@@ -54,7 +54,7 @@ private int port;
     @Test
 
     void testUploadAvatar() {
-        // Arrange: создаём и сохраняем студента
+        // создаём и сохраняем студента
         Student student = new Student();
         student.setName("TestStudent");
         student.setAge(20);

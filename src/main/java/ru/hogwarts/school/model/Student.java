@@ -18,8 +18,8 @@ public class Student {
     @JoinColumn(name = "faculty_Id")
     private Faculty faculty;
 
-//    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Avatar avatar;
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    private Avatar avatar;
 
     public Long getId() {
         return id;
