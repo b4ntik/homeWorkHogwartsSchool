@@ -25,13 +25,13 @@ public class AvatarController {
 
     public AvatarController(AvatarService avatarService){this.avatarService = avatarService;}
 
-    @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/avatar/upload/{studentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
-        //AvatarController avatarService;
+
         avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }
-    @GetMapping(value = "/{id}/avatar-from-db")
+    @GetMapping(value = "/avatar/avatar-from-db/{id}")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = avatarService.findAvatar(id);
         HttpHeaders headers = new HttpHeaders();
@@ -39,7 +39,7 @@ public class AvatarController {
         headers.setContentLength(avatar.getData().length);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
-    @GetMapping(value = "/{id}/avatar-from-file")
+    @GetMapping(value = "/avatar/avatar-from-file/{id}")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(id);
         Path path = Path.of(avatar.getFilePath());
@@ -51,13 +51,13 @@ public class AvatarController {
             is.transferTo(os);
         }
     }
-    @PutMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/avatar/{studentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> changeAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
         avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }
-        @DeleteMapping("/avatar")
-        public void deleteAvatar(@RequestParam Long id) {
-            avatarService.deleteAvatarByStudentId(id);
+    @DeleteMapping("/avatar/{id}")
+    public void deleteAvatar(@RequestParam Long id) {
+        avatarService.deleteAvatarByStudentId(id);
     }
 }

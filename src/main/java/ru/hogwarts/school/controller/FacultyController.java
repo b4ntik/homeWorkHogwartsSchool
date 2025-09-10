@@ -58,11 +58,12 @@ public class FacultyController {
 
 
     @PostMapping("/faculty")
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
+    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
+        Faculty savedFaculty = facultyService.createFaculty(faculty);
+        return ResponseEntity.ok(savedFaculty);
     }
 
-    @PutMapping("/faculty")
+        @PutMapping("/faculty")
     public ResponseEntity<Optional<Faculty>> editFaculty(@RequestBody Faculty faculty) {
 
         return ResponseEntity.ok(facultyService.editFaculty(faculty));

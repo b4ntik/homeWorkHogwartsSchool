@@ -35,7 +35,7 @@ public class StudentController {
     }
 
     @GetMapping("/student/findByAge")
-    public Collection<Student> getStudentBYAge(@RequestParam(required = false) int min, @RequestParam(required = false) int max) {
+    public Collection<Student> getStudentByAge(@RequestParam(required = false) int min, @RequestParam(required = false) int max) {
         return studentService.findStudentsByAgeBetween(min, max);
     }
 
@@ -45,7 +45,7 @@ public class StudentController {
     }
 
 
-    @GetMapping ("/all")
+    @GetMapping("/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
 
@@ -53,8 +53,8 @@ public class StudentController {
     }
 
     @GetMapping("/student/find")
-    public ResponseEntity<Collection<Student>> findStudentsByAge(@RequestParam(required = false) int age){
-        if (age<=0){
+    public ResponseEntity<Collection<Student>> findStudentsByAge(@RequestParam(required = false) int age) {
+        if (age <= 0) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(studentService.findStudentsByAge(age));
@@ -68,8 +68,7 @@ public class StudentController {
     @PutMapping("/student")
     public ResponseEntity<Optional<Student>> editStudent(@RequestBody Student student) {
 
-
-        return ResponseEntity.ok( studentService.editStudent(student));
+        return ResponseEntity.ok(studentService.editStudent(student));
     }
 
     @DeleteMapping("/student")

@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class FacultyService {
     @Autowired
     private final FacultyRepository facultyRepository;
@@ -73,6 +74,7 @@ public class FacultyService {
 
         return facultyRepository.findByColorOrNameIgnoreCase(color, name);
     }
+    @Transactional
     public Collection<Student> findStudentByFacultyId(Long id){
         return studentRepository.findStudentsByFacultyId(id);
     }

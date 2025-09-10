@@ -2,10 +2,13 @@ package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
 
+import java.util.Optional;
+
 @Entity
 public class Avatar {
     @Id
     @Column
+    @GeneratedValue
     private Long id;
     @Column
     private String filePath;
@@ -20,8 +23,8 @@ public class Avatar {
 
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name = "student_id")
+    //@MapsId
+    //@JoinColumn(name = "student_id")
     private Student student;
 
 
@@ -67,5 +70,8 @@ public class Avatar {
 
     public Student getStudent() {
         return student;
+    }
+
+    public void setId(long id) { this.id = id;
     }
 }

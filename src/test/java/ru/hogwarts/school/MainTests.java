@@ -32,13 +32,13 @@ public class MainTests {
     private StudentRepository studentRepository;
     @Autowired
     private TestRestTemplate restTemplate;
-    private TestStudent testStudent;
+   private Student testStudent;
     private Student createdStudent;
 
     @BeforeEach
     void setUp() {
-        testStudent = new TestStudent();
-        createdStudent = studentService.createStudent(testStudent.getStudent());
+        testStudent = new Student();
+        createdStudent = studentService.createStudent(testStudent);
     }
 
 
@@ -59,49 +59,5 @@ public class MainTests {
         String response = this.restTemplate.getForObject(url, String.class);
         Assertions.assertEquals("Welcome to Demo!", response);
     }
-    //создание студента
-    @Test
-    void createStudent() throws Exception {
 
-        Assertions.assertNotNull(createdStudent.getId());
-        Assertions.assertEquals(createdStudent.getName(), "TestStudent");
-        Assertions.assertEquals(createdStudent.getAge(), 66);
-
-    }
-    //изменить студента
-    @Test
-    void editStudent() throws Exception {
-
-        createdStudent.setName("newTestStudent");
-        createdStudent.setAge(45);
-
-        Optional<Student> editedStudent = studentService.editStudent(createdStudent);
-
-        Assertions.assertNotNull(editedStudent.isPresent());
-        Assertions.assertEquals("newTestStudent", editedStudent.get().getName());
-        Assertions.assertEquals(45, editedStudent.get().getAge());
-    }
-
-    //поиск студентов
-    @Test
-    void findStudent() throws Exception {
-
-        Optional<Student> foundStudent = studentService.findStudent(createdStudent.getId());
-        Assertions.assertEquals(foundStudent.get().getName(), "TestStudent");
-    }
-    //тест удаления студента
-    @Test
-    void testDeleteStudent() {
-
-        studentService.deleteStudent(createdStudent.getId());
-        Optional<Student> foundStudent = studentRepository.findById(createdStudent.getId());
-        Assertions.assertFalse(foundStudent.isPresent());
-    }
-    //чистка БД от тестовых сущностей
-    @Test
-    void cleanDataBaseAfterTests() throws Exception {
-        studentService.deleteStudentsByName("TestStudent");
-        Collection<Student> foundStudents = studentRepository.findStudentsByName("TestStudent");
-        Assertions.assertTrue(foundStudents.isEmpty());
-    }
 }

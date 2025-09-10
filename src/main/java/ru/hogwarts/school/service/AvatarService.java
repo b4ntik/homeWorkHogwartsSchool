@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Optional;
 
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -36,8 +37,9 @@ public class AvatarService {
     }
     @Transactional
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
-        Student student = studentRepository.getById(studentId);
-        Path filePath = Path.of(avatarsDir, student + "." + getExtensions(Objects.requireNonNull(avatarFile.getOriginalFilename())));
+        Student student = (studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Студент не найден")));
+        Path filePath = Path.of(avatarsDir, studentId + "." + getExtensions(Objects.requireNonNull(avatarFile.getOriginalFilename())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (
@@ -49,11 +51,13 @@ public class AvatarService {
             bis.transferTo(bos);
         }
 
-        Avatar avatar = avatarRepository.findById(studentId).orElseGet(() -> {
-            Avatar  newAvatar = new Avatar();
+        Avatar avatar = avatarRepository.findAvatar(studentId).orElseGet(() -> {
+            Avatar newAvatar = new Avatar();
             newAvatar.setStudent(student);
+            newAvatar.setId(student.getId()); // <--- ВАЖНО!
             return newAvatar;
         });
+
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
         avatar.setFileSize(avatarFile.getSize());
@@ -64,12 +68,11 @@ public class AvatarService {
             throw new RuntimeException(e);
         }
         avatarRepository.save(avatar);
-
     }
 
     public Avatar findAvatar(Long studentId) {
-        return avatarRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Аватар отсутствует по этому идентификатору"));
+        return avatarRepository.findByStudentId(studentId)
+                .orElse(new Avatar());
     }
 
 
