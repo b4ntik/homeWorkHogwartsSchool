@@ -1,7 +1,8 @@
 package ru.hogwarts.school;
 
+
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,16 +40,6 @@ class AvatarControllerTests {
 
     private Student testStudent;
 
-    @BeforeEach
-    void setUp() {
-        avatarRepository.deleteAll();
-        studentRepository.deleteAll();
-//
-//        testStudent = new Student();
-//        testStudent.setName("TestStudent");
-//        testStudent.setAge(20);
-//        testStudent = studentRepository.save(testStudent);
-    }
 
     @Test
     void testUploadAvatar() throws IOException {
@@ -56,7 +47,7 @@ class AvatarControllerTests {
         testStudent.setName("TestStudent");
         testStudent.setAge(20);
         testStudent = studentRepository.save(testStudent);
-        // Создаём файл для загрузки
+        // создаём файл для загрузки
         byte[] fileContent = {1, 2, 3, 4, 5};
         Resource resource = new ByteArrayResource(fileContent) {
             @Override
@@ -78,6 +69,8 @@ class AvatarControllerTests {
         ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        avatarRepository.deleteAll();
+        studentRepository.deleteAll();
     }
 
     @Test
@@ -109,7 +102,7 @@ class AvatarControllerTests {
 
     @Test
     void testDownloadAvatarFromFile() throws IOException {
-        // Создайте файл и запишите его путь в аватар
+        // создаем файл и его путь
         Path tempFile = Files.createTempFile("avatar", ".jpg");
         Files.write(tempFile, new byte[]{4, 5, 6});
         // создаем аватар
@@ -134,6 +127,8 @@ class AvatarControllerTests {
         Assertions.assertArrayEquals(new byte[]{4, 5, 6}, response.getBody());
 
         Files.deleteIfExists(tempFile);
+        avatarRepository.deleteAll();
+        studentRepository.deleteAll();
     }
 
     @Test
@@ -172,9 +167,12 @@ class AvatarControllerTests {
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        avatarRepository.deleteAll();
+        studentRepository.deleteAll();
     }
 
     @Test
+
     void testDeleteAvatar() {
         // cоздаём аватар
         testStudent = new Student();
@@ -187,13 +185,11 @@ class AvatarControllerTests {
         avatar.setMediaType("image/jpeg");
         avatar.setData(new byte[]{1});
         avatar.setFileSize(1L);
-        avatarRepository.save(avatar);
+        //avatarRepository.save(avatar);
 
         String url = "http://localhost:" + port + "/avatar?id={id}";
-        //restTemplate.delete(url, avatar.getId());
-        Optional<Avatar> avatarOpt = avatarRepository.findById(avatar.getId());
-        avatarOpt.ifPresent(avatarRepository::delete);
-        //avatarRepository.deleteById(avatar.getId());
+        restTemplate.delete(url, avatar.getId());
+
         Optional<Avatar> deleted = avatarRepository.findById(avatar.getId());
         Assertions.assertFalse(deleted.isPresent());
     }

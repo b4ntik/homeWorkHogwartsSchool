@@ -47,7 +47,6 @@ class FacultyControllerTests {
         testFaculty.setColor("Red");
         facultyRepository.save(testFaculty);
 
-        // Можно добавить студентов в факультет, если нужно
     }
 
     @Test
@@ -90,14 +89,14 @@ class FacultyControllerTests {
         String url = "http://localhost:" + port + "/faculty/findStudentsInFaculty?id={id}";
         ResponseEntity<Student[]> response = restTemplate.getForEntity(url, Student[].class, testFaculty.getId());
         Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
-        // Можно проверить, что список не пуст, если добавляли студентов
+
     }
 
     @Test
     void testCreateFaculty() {
         Faculty newFaculty = new Faculty();
-        newFaculty.setName("NewFaculty");
-        newFaculty.setColor("Blue");
+        newFaculty.setName("newFaculty");
+        newFaculty.setColor("blue");
         ResponseEntity<Faculty> response = restTemplate.postForEntity(
                 "http://localhost:" + port + "/faculty",
                 newFaculty,
@@ -105,15 +104,15 @@ class FacultyControllerTests {
         );
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody().getId());
-        Assertions.assertEquals("NewFaculty", response.getBody().getName());
+        Assertions.assertEquals("newFaculty", response.getBody().getName());
     }
 
     @Test
     void testEditFaculty() {
         Faculty update = new Faculty();
         update.setId(testFaculty.getId());
-        update.setName("UpdatedName");
-        update.setColor("Green");
+        update.setName("updatedFaculty");
+        update.setColor("green");
         ResponseEntity<Faculty> response = restTemplate.exchange(
                 "http://localhost:" + port + "/faculty",
                 HttpMethod.PUT,
@@ -122,7 +121,7 @@ class FacultyControllerTests {
         );
         Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
         Assertions.assertNotNull(response.getBody());
-        Assertions.assertEquals("UpdatedName", response.getBody().getName());
+        Assertions.assertEquals("updatedFaculty", response.getBody().getName());
     }
 
     @Test
