@@ -64,7 +64,7 @@ class AvatarControllerTests {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        String url = "http://localhost:" + port + "/" + testStudent.getId() + "/avatar";
+        String url = "http://localhost:" + port + "/avatar/" + testStudent.getId();
 
         ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
 
@@ -89,7 +89,7 @@ class AvatarControllerTests {
         avatar.setId(testStudent.getId());
         avatarRepository.save(avatar);
 
-        String url = "http://localhost:" + port + "/" + avatar.getId() + "/avatar-from-db";
+        String url = "http://localhost:" + port + "/avatar-from-db/" + avatar.getId();
 
         ResponseEntity<byte[]> response = restTemplate.getForEntity(url, byte[].class);
 
@@ -118,7 +118,7 @@ class AvatarControllerTests {
         avatar.setData(new byte[]{4, 5, 6});
         avatarRepository.save(avatar);
 
-        String url = "http://localhost:" + port + "/" + avatar.getId() + "/avatar-from-file";
+        String url = "http://localhost:" + port + "/avatar-from-file/" + avatar.getId();
 
         ResponseEntity<byte[]> response = restTemplate.getForEntity(url, byte[].class);
 
@@ -162,7 +162,7 @@ class AvatarControllerTests {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        String url = "http://localhost:" + port + "/" + testStudent.getId() + "/avatar";
+        String url = "http://localhost:" + port + "/avatar/" + testStudent.getId();
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 

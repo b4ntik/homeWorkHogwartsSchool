@@ -43,9 +43,22 @@ public class StudentController {
     public Faculty getFacultyByStudentId(@RequestParam(required = false) Long studentId) {
         return studentService.findFacultyByStudentId(studentId);
     }
+@GetMapping("/student/find/count")
+public int findCountStudents(){
+            return studentService.findCountStudents();
+            }
 
+    @GetMapping("/student/find/average-age-of-students")
+    public int findAverageAgeOfStudentsStudents(){
+        return studentService.findAverageAgeOfStudents();
+    }
 
-    @GetMapping ("/all")
+    @GetMapping("/student/find/lastStudents")
+    public List<Student> findLastFiveStudents(){
+        return studentService.findLastFiveStudents();
+    }
+
+    @GetMapping ("/student/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
 

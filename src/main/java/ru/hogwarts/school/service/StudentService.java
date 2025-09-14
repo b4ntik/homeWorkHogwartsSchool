@@ -97,4 +97,13 @@ public class StudentService {
 
         return facultyRepository.findFacultyByStudentId(studentId);
     }
+
+    public int findCountStudents() { return studentRepository.findCountStudents();
+    }
+
+    public int findAverageAgeOfStudents() { return studentRepository.findAverageAgeOfStudents();
+    }
+
+    public List<Student> findLastFiveStudents() { return studentRepository.findLastFiveStudents();
+    }
 }

@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 public class AvatarController {
@@ -25,13 +27,13 @@ public class AvatarController {
 
     public AvatarController(AvatarService avatarService){this.avatarService = avatarService;}
 
-    @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/avatar/{studentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
-        //AvatarController avatarService;
-        avatarService.uploadAvatar(studentId, avatar);
+               avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }
-    @GetMapping(value = "/{id}/avatar-from-db")
+
+    @GetMapping(value = "/avatar-from-db/{id}")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = avatarService.findAvatar(id);
         HttpHeaders headers = new HttpHeaders();
@@ -39,7 +41,8 @@ public class AvatarController {
         headers.setContentLength(avatar.getData().length);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
-    @GetMapping(value = "/{id}/avatar-from-file")
+
+    @GetMapping(value = "/avatar-from-file/{id}")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(id);
         Path path = Path.of(avatar.getFilePath());
@@ -51,7 +54,14 @@ public class AvatarController {
             is.transferTo(os);
         }
     }
-    @PutMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    @GetMapping(value = "/avatar/all")
+    public ResponseEntity<List<byte[]>> findAllAvatar(@RequestParam("page") Integer pageNumber, @RequestParam("size") Integer size) throws IOException {
+
+       return ResponseEntity.ok().body(avatarService.findAllAvatars(pageNumber, size));
+    }
+
+    @PutMapping(value = "/avatar/{studentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> changeAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
         avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();

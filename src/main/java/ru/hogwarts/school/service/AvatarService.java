@@ -3,6 +3,9 @@ package ru.hogwarts.school.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
@@ -10,11 +13,16 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -80,6 +88,44 @@ public class AvatarService {
 
     public void deleteAvatarByStudentId(Long id) {
         avatarRepository.deleteAvatarByStudentId(id);
+    }
+
+    public List<byte[]> findAllAvatars(Integer pageNumber, Integer size) throws IOException {
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, size);
+        List<Avatar> avatars = avatarRepository.findAll(pageRequest).getContent();
+        List<byte[]> previews = new ArrayList<>();
+            for(Avatar avatar : avatars){
+                //byte[] previewBytes = createPreview(avatar.getData());
+                BufferedImage previewImage = createPreview(avatar.getData());
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(previewImage, "jpg", baos);
+                byte[] previewBytes = baos.toByteArray();
+
+                previews.add(previewBytes);
+            }
+
+       return previews;
+    };
+
+
+
+    public BufferedImage createPreview(byte[] avatar) throws IOException {
+
+                //byte[] originalAvatar = avatar.getData();
+                ByteArrayInputStream bais = new ByteArrayInputStream(avatar);
+                BufferedImage avatarImage = ImageIO.read(bais);
+                BufferedImage preview = new BufferedImage(100, 100, avatarImage.getType());
+                Graphics2D g2d = preview.createGraphics();
+                g2d.drawImage(avatarImage, 0, 0, 100, 100, null);
+                g2d.dispose();
+               // ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                //ImageIO.write(preview, "jpg", baos);
+
+                //previews.add(baos.toByteArray());
+
+
+        return preview;
     }
 }
 

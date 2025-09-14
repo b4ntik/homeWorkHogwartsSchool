@@ -23,6 +23,7 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-jdbc")
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
     implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation ("net.coobird:thumbnailator:0.4.20")
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly ("com.h2database:h2")
