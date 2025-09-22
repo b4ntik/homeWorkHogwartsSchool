@@ -1,6 +1,8 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class AvatarService {
     private final AvatarRepository avatarRepository;
     private final StudentRepository studentRepository;
     private final StudentService studentService;
-
+    private static final Logger logger = LoggerFactory.getLogger(AvatarService.class);
     public AvatarService(AvatarRepository avatarRepository, StudentRepository studentRepository, StudentService studentService) {
         this.avatarRepository = avatarRepository;
         this.studentRepository = studentRepository;
@@ -61,24 +63,35 @@ public class AvatarService {
         try {
             avatar.setData(avatarFile.getBytes());
         } catch (IOException e) {
+            logger.error("Failed upload avatar");
             throw new RuntimeException(e);
         }
+        //логируем выполнение метода
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Was invoked method {} for upload avatar", methodName);
+
         avatarRepository.save(avatar);
 
     }
 
     public Avatar findAvatar(Long studentId) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Was invoked method {} for search avatar", methodName);
         return avatarRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Аватар отсутствует по этому идентификатору"));
     }
 
 
     private String getExtensions(String fileName) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Was invoked method {} for get extensions", methodName);
         return fileName.substring(fileName.lastIndexOf(".") + 1);
 
     }
 
     public void deleteAvatarByStudentId(Long id) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Was invoked method {} for delete avatar", methodName);
         avatarRepository.deleteAvatarByStudentId(id);
     }
 }

@@ -23,18 +23,17 @@ import java.util.*;
 public class StudentService {
 
 
-
     @Autowired
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
     private final AvatarRepository avatarRepository;
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
-    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository, AvatarRepository avatarRepository)
-    { this.studentRepository = studentRepository;
+    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository, AvatarRepository avatarRepository) {
+        this.studentRepository = studentRepository;
         this.facultyRepository = facultyRepository;
         this.avatarRepository = avatarRepository;
-        //this.logger = logger;
+
     }
 
     @PersistenceContext
@@ -55,7 +54,7 @@ public class StudentService {
     public Student editStudent(Student student) {
         if (student.getId() != null) {
             Optional<Student> editedStudent = studentRepository.findById(student.getId());
-            if(editedStudent.isPresent()){
+            if (editedStudent.isPresent()) {
                 Student newStudent = editedStudent.get();
                 newStudent.setName(student.getName());
                 newStudent.setAge(student.getAge());
@@ -69,71 +68,75 @@ public class StudentService {
         logger.info("Student {} doesn`t exist", student.getId());
         return null;
     }
-        //найти студента по айди
-        public Optional<Student> findStudent (Long id){
-            String methodName = new Throwable().getStackTrace()[0].getMethodName();
-            logger.info("Method {} was called", methodName);
-            logger.info("Student by id {} was found", id);
-            return studentRepository.findById(id);
-        }
 
-        //удалить студента по айди
-        @Transactional
-        public void deleteStudent (Long id){
+    //найти студента по айди
+    public Optional<Student> findStudent(Long id) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.info("Student by id {} was found", id);
+        return studentRepository.findById(id);
+    }
+
+    //удалить студента по айди
+    @Transactional
+    public void deleteStudent(Long id) {
         avatarRepository.deleteAvatarByStudentId(id);
-            String methodName = new Throwable().getStackTrace()[0].getMethodName();
-            logger.info("Method {} was called", methodName);
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
         logger.info("Student by id {} was deleted", id);
         studentRepository.deleteById(id);
 
-        }
+    }
 
-        // выдать список всех студентов
-        public List<Student> getAllStudents () {
-            String methodName = new Throwable().getStackTrace()[0].getMethodName();
-            logger.info("Method {} was called", methodName);
-            logger.info("All students was printed");
+    // выдать список всех студентов
+    public List<Student> getAllStudents() {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.info("All students was printed");
 
-            return studentRepository.findAll();
+        return studentRepository.findAll();
 
-        }
-        @Transactional
-        public void deleteStudentsByName(String nameStudent){
-            String methodName = new Throwable().getStackTrace()[0].getMethodName();
-            logger.info("Method {} was called", methodName);
-            logger.info("Student by name {} was deleted", nameStudent);
+    }
+
+    @Transactional
+    public void deleteStudentsByName(String nameStudent) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.info("Student by name {} was deleted", nameStudent);
 
         studentRepository.deleteStudentsByName(nameStudent);
-        }
+    }
 
-        //фильтр студентов по возрасту
-        public Collection<Student> findStudentsByAge ( int age){
-            String methodName = new Throwable().getStackTrace()[0].getMethodName();
-            logger.info("Method {} was called", methodName);
-            logger.info("Student {} years old was found", age);
-            return studentRepository.findByAge(age);
+    //фильтр студентов по возрасту
+    public Collection<Student> findStudentsByAge(int age) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.info("Student {} years old was found", age);
+        return studentRepository.findByAge(age);
 
-        }
+    }
+
     //поиск студента по имени
-    public Collection<Student> findStudentsByName (String nameStudent){
+    public Collection<Student> findStudentsByName(String nameStudent) {
         String methodName = new Throwable().getStackTrace()[0].getMethodName();
         logger.info("Method {} was called", methodName);
         logger.info("Student by name {} was found", nameStudent);
         return studentRepository.findStudentsByName(nameStudent);
 
     }
-        public Collection<Student> findStudentsByAgeBetween(int min, int max){
-            String methodName = new Throwable().getStackTrace()[0].getMethodName();
-            logger.info("Method {} was called", methodName);
-            logger.trace("Method 'findStudentsByAge'{} was called", methodName);
-            logger.info("Students between {min} and {max}");
-        return studentRepository.findStudentsByAgeBetween(min, max);
-        }
 
-         public Faculty findFacultyByStudentId(Long studentId) {
-             String methodName = new Throwable().getStackTrace()[0].getMethodName();
-             logger.info("Method {} was called", methodName);
-             logger.info("Faculty {} by studentId", facultyRepository.findFacultyByStudentId(studentId));
+    public Collection<Student> findStudentsByAgeBetween(int min, int max) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.trace("Method 'findStudentsByAge'{} was called", methodName);
+        logger.info("Students between {min} and {max}");
+        return studentRepository.findStudentsByAgeBetween(min, max);
+    }
+
+    public Faculty findFacultyByStudentId(Long studentId) {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.info("Faculty {} by studentId", facultyRepository.findFacultyByStudentId(studentId));
         return facultyRepository.findFacultyByStudentId(studentId);
     }
 }
