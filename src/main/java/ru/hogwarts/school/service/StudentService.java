@@ -7,7 +7,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -16,6 +16,8 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 //import java.util.logging.Logger;
 
 
@@ -89,12 +91,20 @@ public class StudentService {
     }
 
     // выдать список всех студентов
-    public List<Student> getAllStudents() {
+    public List<String> getAllStudents() {
         String methodName = new Throwable().getStackTrace()[0].getMethodName();
         logger.info("Method {} was called", methodName);
         logger.info("All students was printed");
+        List<String> allNames = studentRepository.findAll().stream()
+                .filter(Objects::nonNull)
 
-        return studentRepository.findAll();
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+
+
+        return allNames;
 
     }
 
