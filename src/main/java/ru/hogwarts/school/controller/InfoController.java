@@ -11,13 +11,18 @@ public class InfoController {
 
     @Value("${server.port}")
     private int port;
-//    @Autowired
-//    public void setWebServerApplicationContext(WebServerApplicationContext context) {
-//        this.port = context.getWebServer().getPort();
-//    }
+
 
     @GetMapping("/port")
     public Integer getServerPort() {
         return port;
+    }
+    @GetMapping("/getResult")
+    public String getResult() {
+        long sum = 0;
+        for (long i = 0; i <= 1000000; i++){
+            sum = sum +i;
+        }
+        return "Результат: " + sum;
     }
 }

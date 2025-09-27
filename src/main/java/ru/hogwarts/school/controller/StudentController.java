@@ -11,6 +11,7 @@ import ru.hogwarts.school.service.StudentService;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 
 @RestController
@@ -45,11 +46,17 @@ public class StudentController {
     }
 
 
-    @GetMapping ("/all")
+    @GetMapping ("/student/all")
     public ResponseEntity<Collection<String>> getAllStudents() {
         List<String> students = studentService.getAllStudents();
 
         return ResponseEntity.ok(students);
+    }
+    @GetMapping ("/student/averageAge")
+    public ResponseEntity<OptionalDouble> getAverageAge() {
+        OptionalDouble  averageAge = studentService.getAverageAge();
+
+        return ResponseEntity.ok(averageAge);
     }
 
     @GetMapping("/student/find")
@@ -68,9 +75,6 @@ public class StudentController {
 
     @PutMapping("/student")
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-//        updated = studentService.editStudent(student);
-//        return updated.map(ResponseEntity::ok)
-//                .orElseGet(() -> ResponseEntity.notFound().build());
 
         return ResponseEntity.ok(studentService.editStudent(student));
     }

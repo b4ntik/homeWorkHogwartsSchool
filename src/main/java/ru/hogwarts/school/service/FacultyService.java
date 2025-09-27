@@ -11,8 +11,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FacultyService {
@@ -109,5 +108,18 @@ public class FacultyService {
         String methodName = new Throwable().getStackTrace()[0].getMethodName();
         logger.info("Was invoked method {} for search Faculty", methodName);
         return studentRepository.findStudentsByFacultyId(id);
+    }
+
+    public String getLongestNameFaculty() {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.info("All students was printed");
+
+        String longestNameFaculty = facultyRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .map(Faculty::getName)
+                .max(Comparator.comparingLong(String::length))
+                .orElse(null);
+        return longestNameFaculty;
     }
 }

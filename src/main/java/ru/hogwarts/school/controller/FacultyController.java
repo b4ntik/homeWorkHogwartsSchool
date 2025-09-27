@@ -32,6 +32,10 @@ public class FacultyController {
     public ResponseEntity<Collection<Faculty>> getAllFaculties() {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
+    @GetMapping("/faculty/getLongestName")
+    public ResponseEntity<String> getLongestNameFaculty() {
+        return ResponseEntity.ok(facultyService.getLongestNameFaculty());
+    }
 
     @GetMapping("/faculty/find")
     public ResponseEntity<Collection<Faculty>> findFacultiesByColor(@RequestParam(required = false) String color) {

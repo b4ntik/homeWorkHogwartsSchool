@@ -97,7 +97,6 @@ public class StudentService {
         logger.info("All students was printed");
         List<String> allNames = studentRepository.findAll().stream()
                 .filter(Objects::nonNull)
-
                 .map(Student::getName)
                 .map(String::toUpperCase)
                 .sorted()
@@ -148,5 +147,20 @@ public class StudentService {
         logger.info("Method {} was called", methodName);
         logger.info("Faculty {} by studentId", facultyRepository.findFacultyByStudentId(studentId));
         return facultyRepository.findFacultyByStudentId(studentId);
+    }
+
+    public OptionalDouble getAverageAge() {
+        String methodName = new Throwable().getStackTrace()[0].getMethodName();
+        logger.info("Method {} was called", methodName);
+        logger.info("All students was printed");
+        //List<Integer> ages = Arrays.studentRepository.findAll().getAge();
+        OptionalDouble averageAge = studentRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .map(Student::getAge)
+                .mapToInt(Integer::intValue)
+                .average();
+
+
+        return averageAge;
     }
 }
