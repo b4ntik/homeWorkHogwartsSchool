@@ -12,6 +12,13 @@ public class Student {
     private String name;
     private int age;
 
+    @ManyToOne
+    @JoinColumn(name = "faculty_Id")
+    private Faculty faculty;
+
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Avatar avatar;
+
     public Long getId() {
         return id;
     }
