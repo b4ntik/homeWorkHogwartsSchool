@@ -11,10 +11,6 @@ public class InfoController {
 
     @Value("${server.port}")
     private int port;
-//    @Autowired
-//    public void setWebServerApplicationContext(WebServerApplicationContext context) {
-//        this.port = context.getWebServer().getPort();
-//    }
 
     @GetMapping("/port")
     public Integer getServerPort() {

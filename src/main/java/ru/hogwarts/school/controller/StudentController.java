@@ -68,9 +68,6 @@ public class StudentController {
 
     @PutMapping("/student")
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-//        updated = studentService.editStudent(student);
-//        return updated.map(ResponseEntity::ok)
-//                .orElseGet(() -> ResponseEntity.notFound().build());
 
         return ResponseEntity.ok(studentService.editStudent(student));
     }
