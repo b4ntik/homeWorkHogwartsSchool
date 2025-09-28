@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -27,13 +28,24 @@ public class StudentController {
         return "Welcome to Demo!";
     }
 
-    ;
 
     @GetMapping("/student")
     public Optional<Student> getStudent(@RequestParam Long id) {
         return studentService.findStudent(id);
     }
 
+    @GetMapping("/students/print-parallel")
+    public ResponseEntity<Collection<String>> getAllStudentsParallelPrint() {
+        try {
+            List<String> students = studentService.getAllStudentsParallelPrint();
+
+            return ResponseEntity.ok(students);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @GetMapping("/student/findByAge")
     public Collection<Student> getStudentBYAge(@RequestParam(required = false) int min, @RequestParam(required = false) int max) {
         return studentService.findStudentsByAgeBetween(min, max);

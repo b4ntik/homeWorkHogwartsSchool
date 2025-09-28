@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -16,6 +17,7 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 //import java.util.logging.Logger;
 
 
@@ -139,4 +141,41 @@ public class StudentService {
         logger.info("Faculty {} by studentId", facultyRepository.findFacultyByStudentId(studentId));
         return facultyRepository.findFacultyByStudentId(studentId);
     }
-}
+
+    public List<String> getAllStudentsParallelPrint() throws InterruptedException {
+        List<String> names = studentRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .map(Student::getName)
+                .collect(Collectors.toList());
+
+        List<String> newNames = new ArrayList<>();
+try {
+
+
+            newNames.add(names.get(0));
+            newNames.add(names.get(1));
+            System.out.println(names.get(0));
+            System.out.println(names.get(1));
+            Thread thread = new Thread(){
+                public void run(){
+                    System.out.println(names.get(2));
+                    System.out.println(names.get(3));
+                    newNames.add(names.get(2));
+                    newNames.add(names.get(3));
+                }};
+                thread.start();
+            Thread thread1 = new Thread(){
+                public void run(){
+                    System.out.println(names.get(4));
+                    System.out.println(names.get(5));
+                    newNames.add(names.get(4));
+                    newNames.add(names.get(5));
+                }};
+            thread1.start();
+    thread.join();
+    thread1.join();}
+catch (InterruptedException e){ Thread.currentThread().interrupt();}
+
+        return newNames;
+        }
+    }
