@@ -17,8 +17,6 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-//import java.util.logging.Logger;
 
 
 @Service
@@ -101,8 +99,6 @@ public class StudentService {
                 .map(String::toUpperCase)
                 .sorted()
                 .collect(Collectors.toList());
-
-
         return allNames;
 
     }
@@ -153,7 +149,7 @@ public class StudentService {
         String methodName = new Throwable().getStackTrace()[0].getMethodName();
         logger.info("Method {} was called", methodName);
         logger.info("All students was printed");
-        //List<Integer> ages = Arrays.studentRepository.findAll().getAge();
+
         OptionalDouble averageAge = studentRepository.findAll().stream()
                 .filter(Objects::nonNull)
                 .map(Student::getAge)
@@ -163,4 +159,20 @@ public class StudentService {
 
         return averageAge;
     }
+
+    public List<String> findStudentByFirstLetter(String letter) {
+            String methodName = new Throwable().getStackTrace()[0].getMethodName();
+            logger.info("Method {} was called", methodName);
+            logger.info("All students was printed");
+            List<String> allStudentsNames = studentRepository.findAll().stream()
+                    .filter(Objects::nonNull)
+                    .map(Student::getName)
+                    .map(String::toUpperCase)
+                    .filter(name -> name.startsWith(letter.toUpperCase()))
+                    .sorted()
+                    .collect(Collectors.toList());
+            return allStudentsNames;
+
+
+        }
 }
