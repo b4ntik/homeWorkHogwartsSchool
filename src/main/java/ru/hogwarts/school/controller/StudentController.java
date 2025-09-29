@@ -2,12 +2,16 @@ package ru.hogwarts.school.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -24,16 +28,44 @@ public class StudentController {
         return "Welcome to Demo!";
     }
 
-    ;
 
     @GetMapping("/student")
-    public Student getStudent(@RequestParam long id) {
+    public Optional<Student> getStudent(@RequestParam Long id) {
         return studentService.findStudent(id);
     }
 
+    @GetMapping("/students/print-parallel")
+    public ResponseEntity<Collection<String>> getAllStudentsParallelPrint() {
+        try {
+            List<String> students = studentService.getAllStudentsParallelPrint();
+
+            return ResponseEntity.ok(students);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/students/print-synchronized")
+    public ResponseEntity<Collection<String>> getAllStudentsParallelPrintSynchronized() throws  InterruptedException{
+        List<String> students = studentService.getAllStudentsParallelPrintSynchronized();
+
+        return ResponseEntity.ok(students);
+    }
+    @GetMapping("/student/findByAge")
+    public Collection<Student> getStudentBYAge(@RequestParam(required = false) int min, @RequestParam(required = false) int max) {
+        return studentService.findStudentsByAgeBetween(min, max);
+    }
+
+    @GetMapping("/student/findFacultyByIdStudent")
+    public Faculty getFacultyByStudentId(@RequestParam(required = false) Long studentId) {
+        return studentService.findFacultyByStudentId(studentId);
+    }
+
+
     @GetMapping ("/all")
     public ResponseEntity<Collection<Student>> getAllStudents() {
-        Collection<Student> students = studentService.getAllStudents();
+        List<Student> students = studentService.getAllStudents();
 
         return ResponseEntity.ok(students);
     }
@@ -48,16 +80,14 @@ public class StudentController {
 
     @PostMapping("/student")
     public Student createStudent(@RequestBody Student student) {
+
         return studentService.createStudent(student);
     }
 
     @PutMapping("/student")
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        Student changedStudent = studentService.editStudent(student);
-        if (changedStudent == null) {
-           return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(changedStudent);
+
+        return ResponseEntity.ok(studentService.editStudent(student));
     }
 
     @DeleteMapping("/student")
