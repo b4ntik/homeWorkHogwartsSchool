@@ -46,6 +46,12 @@ public class StudentController {
                     ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/students/print-synchronized")
+    public ResponseEntity<Collection<String>> getAllStudentsParallelPrintSynchronized() throws  InterruptedException{
+        List<String> students = studentService.getAllStudentsParallelPrintSynchronized();
+
+        return ResponseEntity.ok(students);
+    }
     @GetMapping("/student/findByAge")
     public Collection<Student> getStudentBYAge(@RequestParam(required = false) int min, @RequestParam(required = false) int max) {
         return studentService.findStudentsByAgeBetween(min, max);

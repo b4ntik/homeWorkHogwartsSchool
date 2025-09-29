@@ -149,33 +149,66 @@ public class StudentService {
                 .collect(Collectors.toList());
 
         List<String> newNames = new ArrayList<>();
-try {
 
 
-            newNames.add(names.get(0));
-            newNames.add(names.get(1));
-            System.out.println(names.get(0));
-            System.out.println(names.get(1));
-            Thread thread = new Thread(){
-                public void run(){
-                    System.out.println(names.get(2));
-                    System.out.println(names.get(3));
-                    newNames.add(names.get(2));
-                    newNames.add(names.get(3));
-                }};
-                thread.start();
-            Thread thread1 = new Thread(){
-                public void run(){
-                    System.out.println(names.get(4));
-                    System.out.println(names.get(5));
-                    newNames.add(names.get(4));
-                    newNames.add(names.get(5));
-                }};
-            thread1.start();
-    thread.join();
-    thread1.join();}
-catch (InterruptedException e){ Thread.currentThread().interrupt();}
+        newNames.add(names.get(0));
+        newNames.add(names.get(1));
+        System.out.println(names.get(0));
+        System.out.println(names.get(1));
+        Thread thread = new Thread() {
+            public void run() {
+                System.out.println(names.get(2));
+                System.out.println(names.get(3));
+                newNames.add(names.get(2));
+                newNames.add(names.get(3));
+            }
+        };
+        thread.start();
+        Thread thread1 = new Thread() {
+            public void run() {
+                System.out.println(names.get(4));
+                System.out.println(names.get(5));
+                newNames.add(names.get(4));
+                newNames.add(names.get(5));
+            }
+        };
+        thread1.start();
 
         return newNames;
-        }
     }
+
+    public List<String> getAllStudentsParallelPrintSynchronized() throws InterruptedException {
+
+        List<String> names = studentRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .map(Student::getName)
+                .collect(Collectors.toList());
+
+        List<String> newNames = new ArrayList<>();
+        int blockSize =2;
+
+        for (int i = 0; i < names.size(); i += blockSize) {
+            int end = Math.min(i + blockSize, names.size());
+            List<String> block = names.subList(i, end);
+
+            if (i == 0) {
+                // первый блок — в основном потоке
+                block.forEach(name -> System.out.println("Main thread: " + name));
+                newNames.addAll(block);
+            } else {
+                // остальные — в параллельных потоках
+                Thread t = new Thread(() -> {
+                    block.forEach(name -> {
+                        System.out.println("Parallel thread: " + name);
+                    });
+                });
+                t.start();
+                t.join(); // дождаться завершения потока
+                newNames.addAll(block);
+            }
+        }
+        return newNames;
+    }
+
+}
+
